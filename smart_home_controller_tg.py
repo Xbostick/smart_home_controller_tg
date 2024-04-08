@@ -1,5 +1,6 @@
 import os
 import logging
+import subprocess
 from telegram import Update
 from telegram.ext import ApplicationBuilder, ContextTypes, CommandHandler
 from wakeonlan import send_magic_packet
@@ -95,6 +96,7 @@ async def WakeUpNeo(update, context):
     send_magic_packet("7C,10,C9,43,17,E3")
 
 if __name__ == '__main__':
+    subprocess.Popen(['sh', '/root/fluid.sh'])
     print(f"TOKKEN = {API_TOKEN}\n\
           ADMINS = {ADMINS}\n \
           VALDATED_USERS = {VALDATED_USERS}")
@@ -110,3 +112,4 @@ if __name__ == '__main__':
     application.add_handler(WakeUpNeo_handler)
     
     application.run_polling()
+
