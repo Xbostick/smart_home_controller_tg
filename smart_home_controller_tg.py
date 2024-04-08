@@ -21,14 +21,15 @@ logging.basicConfig(
 str_to_greet_newcomers1 = "Hello! I'm a telegram bot for remote controll your smart home devices for 196. \n"
 str_to_greet_newcomers2 = "To get started, you need to be confirmed by admins. W8 please, they already notificated. \n"
 
-with open("secure_data.txt", "r",encoding='ASCII') as f:
+ROOT_DIR = os.path.dirname(os.path.abspath(__file__))
+with open(os.path.join(ROOT_DIR, "secure_data.txt"), "r",encoding='ASCII') as f:
     """This file contains  Telegram API_TOKEN and ADMINS. So init it
     """
     API_TOKEN = f.readline().split(' ')[1]
     ADMINS = {admin : {} for admin in f.readline().split(' ')[1:] }
 print (ADMINS, API_TOKEN)
-if os.path.exists("session_data.txt"):
-    with open ("session_data.txt", "r") as f:
+if os.path.exists(os.path.join(ROOT_DIR,"session_data.txt")):
+    with open (os.path.join(ROOT_DIR,"session_data.txt"), "r") as f:
         VALDATED_USERS = {line.split(' ')[0] : line.split(' ')[1] for line in f.readlines()}
 else:
     VALDATED_USERS = {}
