@@ -96,7 +96,7 @@ async def WakeUpNeo(update, context):
     send_magic_packet("7C,10,C9,43,17,E3")
 
 if __name__ == '__main__':
-    #subprocess.Popen(['sh', '/root/fluid.sh'])
+    subprocess.Popen(['python3', str(os.path.join(ROOT_DIR,"auto_light_up.py"))])
     print(f"TOKKEN = {API_TOKEN}\n\
           ADMINS = {ADMINS}\n \
           VALDATED_USERS = {VALDATED_USERS}")
