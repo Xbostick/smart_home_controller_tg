@@ -3,3 +3,6 @@
 /jabka_bot.py
 /secure_data.txt
 /session_data.txt
+/local_data.txt
+/ex.py
+/__pycache__
