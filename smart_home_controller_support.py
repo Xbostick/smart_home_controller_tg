@@ -53,6 +53,7 @@ ADMINS, API_TOKEN, VALDATED_USERS = get_secure_data()
 def Authorized_Only(func):
     async def wrapper(update: Update, context, *args, **kwargs):
         print(update.message.chat.username)
+        ADMINS, _, VALDATED_USERS = get_secure_data()
         if update.message.chat.username in VALDATED_USERS.keys() or update.message.chat.username in ADMINS.keys():
             return await func(update, context, *args, **kwargs)
         else:

@@ -120,7 +120,6 @@ if __name__ == '__main__':
             obj, 
             LOCAL_SERVING[obj]["processing"]
             ))
-    # application.add_handlers(local_handlers)
 
     conv_handler = ConversationHandler(
         entry_points=local_handlers,
