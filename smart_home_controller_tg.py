@@ -1,42 +1,27 @@
 import os
 import logging
 import subprocess
-from telegram import Update
-from telegram.ext import ApplicationBuilder, ContextTypes, CommandHandler
+from telegram import Update, InlineKeyboardButton, KeyboardButton, InlineKeyboardMarkup
+from telegram.ext import ApplicationBuilder, ContextTypes, CommandHandler, CallbackQueryHandler, ConversationHandler, MessageHandler
 from wakeonlan import send_magic_packet
+from yeelight import Bulb
 
-def Authorized_Only(func):
-    async def wrapper(update: Update, context: ContextTypes, *args, **kwargs):
-        print(update.message.chat.username)
-        if update.message.chat.username in VALDATED_USERS.keys() or update.message.chat.username in ADMINS.keys():
-            return await func(update, context, *args, **kwargs)
-        else:
-            await context.bot.send_message(chat_id=update.effective_chat.id, text="You are not authorized to use this bot.")
-    return wrapper
+from smart_home_controller_support import get_secure_data, get_local_data, LOCAL_SERVING, Authorized_Only
+
+str_to_greet_newcomers1 = "Hello! I'm a telegram bot for remote controll your smart home devices for 196. \n"
+str_to_greet_newcomers2 = "To get started, you need to be confirmed by admins. W8 please, they already notificated. \n"
+ROOT_DIR = os.path.dirname(os.path.abspath(__file__))
 
 logging.basicConfig(
     format='%(asctime)s - %(name)s - %(levelname)s - %(message)s',
     level=logging.INFO
 )
 
-str_to_greet_newcomers1 = "Hello! I'm a telegram bot for remote controll your smart home devices for 196. \n"
-str_to_greet_newcomers2 = "To get started, you need to be confirmed by admins. W8 please, they already notificated. \n"
-
-ROOT_DIR = os.path.dirname(os.path.abspath(__file__))
-with open(os.path.join(ROOT_DIR, "secure_data.txt"), "r",encoding='ASCII') as f:
-    """This file contains  Telegram API_TOKEN and ADMINS. So init it
-    """
-    API_TOKEN = f.readline().split(' ')[1]
-    ADMINS = {admin : {} for admin in f.readline().split(' ')[1:] }
-print (ADMINS, API_TOKEN)
-if os.path.exists(os.path.join(ROOT_DIR,"session_data.txt")):
-    with open (os.path.join(ROOT_DIR,"session_data.txt"), "r") as f:
-        VALDATED_USERS = {line.split(' ')[0] : line.split(' ')[1] for line in f.readlines()}
-else:
-    VALDATED_USERS = {}
-
+ADMINS, API_TOKEN, VALDATED_USERS = get_secure_data()
+LOCALS = get_local_data()
 
 async def verify_notification(update, context):
+    await context.bot.sendMessage(chat_id=update.effective_chat.id, text="W8 for admin verifing")
     for admin in ADMINS.values():
         print(admin)
         print(admin.keys())
@@ -52,9 +37,9 @@ async def start(update, context):
         update (_type_): _description_
         context (_type_): _description_
     """
-    ##await context.bot.send_message(chat_id=update.effective_chat.id, text="I'm a bot, please talk to me!")
     await context.bot.send_message(chat_id=update.effective_chat.id, text=str_to_greet_newcomers1)
     await context.bot.send_message(chat_id=update.effective_chat.id, text=str_to_greet_newcomers2)
+    
     if update.message.chat.username not in ADMINS and update.message.chat.username not in VALDATED_USERS:
             await verify_notification(update, context)
     elif update.message.chat.username in VALDATED_USERS:
@@ -95,6 +80,22 @@ async def WakeUpNeo(update, context):
     await context.bot.send_message(chat_id=update.effective_chat.id, text= f"WakeUp Package sent")
     send_magic_packet("7C,10,C9,43,17,E3")
 
+def build_menu(buttons, n_cols,
+               header_buttons=None,
+               footer_buttons=None):
+    menu = [buttons[i:i + n_cols] for i in range(0, len(buttons), n_cols)]
+    if header_buttons:
+        menu.insert(0, [header_buttons])
+    if footer_buttons:
+        menu.append([footer_buttons])
+    return menu
+
+async def menu_debug(update, context):
+   return  "bulbs"
+async def end(update, context):
+    return  ConversationHandler.END
+
+
 if __name__ == '__main__':
     subprocess.Popen(['python3', str(os.path.join(ROOT_DIR,"auto_light_up.py"))])
     print(f"TOKKEN = {API_TOKEN}\n\
@@ -106,10 +107,30 @@ if __name__ == '__main__':
     start_handler = CommandHandler('start', start)
     verify_handler = CommandHandler('verify', verify)
     WakeUpNeo_handler = CommandHandler('wakeup', WakeUpNeo)
+    # Debug_handler = CommandHandler('debug', menu_debug)
 
     application.add_handler(start_handler)
     application.add_handler(verify_handler)
     application.add_handler(WakeUpNeo_handler)
-    
+    # application.add_handler(Debug_handler)
+
+    local_handlers = []
+    for obj in LOCAL_SERVING:
+        local_handlers.append(CommandHandler(
+            obj, 
+            LOCAL_SERVING[obj]["processing"]
+            ))
+    # application.add_handlers(local_handlers)
+
+    conv_handler = ConversationHandler(
+        entry_points=local_handlers,
+        states={
+            obj : [CallbackQueryHandler(LOCAL_SERVING[obj]["callback"])] for obj in LOCAL_SERVING
+        },
+        fallbacks=[CallbackQueryHandler(LOCAL_SERVING[obj]["callback"]) for obj in LOCAL_SERVING],
+    )
+
+    application.add_handler(conv_handler)
+
     application.run_polling()
 
