@@ -92,10 +92,15 @@ async def switch_bulb(ip):
 def get_state_bulb():
     states = []
     for bulb in LOCALS["bulbs"]:
-        if Bulb(LOCALS["bulbs"][bulb]).get_properties()["power"] == "on":
-            states.append("\U0001F4A1")
-        else:
-            states.append("\U0001F311")
+        try:
+            if Bulb(LOCALS["bulbs"][bulb]).get_properties()["power"] == "on":
+                states.append("\U0001F4A1")
+            else:
+                states.append("\U0001F311")
+        except BulbException:
+            states.append("\U0001F6E0")
+
+
     return states
 
 @Authorized_Only
@@ -144,7 +149,34 @@ async def server_handler(update, context):
     await query.edit_message_text(text=f"Выбранный вариант: {variant}, ничего не будет :( ")
     return ConversationHandler.END
 
+
+#_______________Strip sections _______________#
+
+@Authorized_Only
+async def server_buttons(update, context):
+    # список кнопок
+    print("here")
+    keyboard = [
+        [ 
+            InlineKeyboardButton(one, callback_data=one) for one in LOCALS["servers"].keys()
+
+        ],
+        [InlineKeyboardButton("Отмена", callback_data="None")]
+    ]
+    reply_markup = InlineKeyboardMarkup(keyboard)
+    await update.message.reply_text('Пожалуйста, выберите:', reply_markup=reply_markup)
+    return "servers"
+    
+@Can_be_cancelled
+async def server_handler(update, context):
+    query = update.callback_query
+    variant = query.data
+    await query.edit_message_text(text=f"Выбранный вариант: {variant}, ничего не будет :( ")
+    return ConversationHandler.END
+
+
 #_____________________end_____________________#
+
 
 
 
