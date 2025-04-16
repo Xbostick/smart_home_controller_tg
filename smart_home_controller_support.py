@@ -1,9 +1,13 @@
 import os
-from yeelight import Bulb, BulbException
 from telegram import Update, InlineKeyboardButton, KeyboardButton, InlineKeyboardMarkup
 from telegram.ext import ConversationHandler
 from time import sleep
 import asyncio
+
+#bulbs
+from yeelight import Bulb, BulbException
+#PCs
+from wakeonlan import send_magic_packet
 
 ROOT_DIR = os.path.dirname(os.path.abspath(__file__))
 
@@ -178,18 +182,57 @@ async def server_handler(update, context):
 #_____________________end_____________________#
 
 
+#_______________PC sections _______________#
+from wakeonlan import send_magic_packet
+async def WakeUpNeo(pc_mac_adr):
+    print(pc_mac_adr)
+    send_magic_packet(str(pc_mac_adr))
+    return 0
+
+
+@Authorized_Only
+async def pc_buttons(update, context):
+    # список кнопок
+    print("PC section")
+    keyboard = [
+        [ 
+            InlineKeyboardButton(name+' ' + emoji, callback_data=name) for name,emoji in zip(LOCALS["pcs"].keys(), ['\U0001f420','\u26B0\uFE0F'])
+
+        ],
+        [InlineKeyboardButton("Отмена", callback_data="None")]
+    ]
+    reply_markup = InlineKeyboardMarkup(keyboard)
+    await update.message.reply_text('Какой секс включаем?', reply_markup=reply_markup)
+    return "pcs"
+    
+@Can_be_cancelled
+async def pc_handler(update, context):
+    query = update.callback_query
+    variant = query.data
+    pc_wakeup_task = asyncio.create_task(WakeUpNeo(LOCALS["pcs"][variant]))
+    await pc_wakeup_task
+    await query.edit_message_text(text=f"Сигнал отправлен")
+    return ConversationHandler.END
+
+#_____________________end__________________#
+
 
 
 LOCAL_SERVING = {
-    "bulbs" : {
-        "processing" : bulb_buttons,
-        "callback" : bulb_handler,
-    },
-    "servers" : 
+    # "bulbs" : {
+    #     "processing" : bulb_buttons,
+    #     "callback" : bulb_handler,
+    # },
+    # "servers" : 
+    #     {
+    #     "processing" : server_buttons,
+    #     "callback" : server_handler,
+    # },
+    "pcs" : 
         {
-        "processing" : server_buttons,
-        "callback" : server_handler,
-    }
+        "processing" : pc_buttons,
+        "callback" : pc_handler,
+    },
 
 }
 

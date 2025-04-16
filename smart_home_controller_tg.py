@@ -75,11 +75,6 @@ async def verify(update, context):
                                 "actions" : None}
     await context.bot.send_message(chat_id=update.effective_chat.id, text= f"{username} is verified")
 
-@Authorized_Only    
-async def WakeUpNeo(update, context):
-    await context.bot.send_message(chat_id=update.effective_chat.id, text= f"WakeUp Package sent")
-    send_magic_packet("7C,10,C9,43,17,E3")
-
 def build_menu(buttons, n_cols,
                header_buttons=None,
                footer_buttons=None):
