@@ -101,12 +101,10 @@ if __name__ == '__main__':
     
     start_handler = CommandHandler('start', start)
     verify_handler = CommandHandler('verify', verify)
-    WakeUpNeo_handler = CommandHandler('wakeup', WakeUpNeo)
     # Debug_handler = CommandHandler('debug', menu_debug)
 
     application.add_handler(start_handler)
     application.add_handler(verify_handler)
-    application.add_handler(WakeUpNeo_handler)
     # application.add_handler(Debug_handler)
 
     local_handlers = []
