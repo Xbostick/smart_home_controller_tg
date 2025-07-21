@@ -6,7 +6,7 @@ from telegram.ext import ApplicationBuilder, ContextTypes, CommandHandler, Callb
 from wakeonlan import send_magic_packet
 from yeelight import Bulb
 
-from smart_home_controller_support import get_secure_data, get_local_data, LOCAL_SERVING, Authorized_Only
+from smart_home_controller_support import get_secure_data, get_local_data, LOCAL_SERVING, Authorized_Only, Admin_Only
 
 str_to_greet_newcomers1 = "Hello! I'm a telegram bot for remote controll your smart home devices for 196. \n"
 str_to_greet_newcomers2 = "To get started, you need to be confirmed by admins. W8 please, they already notificated. \n"
@@ -55,7 +55,7 @@ async def start(update, context):
                                                "actions" : None}
         print(f"New admn list = {ADMINS}")
 
-
+@Admin_Only
 async def verify(update, context):
     """Functiom to handle the /verify command
 
@@ -73,6 +73,9 @@ async def verify(update, context):
 
     VALDATED_USERS[username] = {"id" : None,
                                 "actions" : None}
+    with open("./session_data.txt","a") as f:
+      await f.write(f"\n{username} 0")
+      f.close()
     await context.bot.send_message(chat_id=update.effective_chat.id, text= f"{username} is verified")
 
 @Authorized_Only    

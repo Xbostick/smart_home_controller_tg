@@ -60,6 +60,17 @@ def Authorized_Only(func):
             await context.bot.send_message(chat_id=update.effective_chat.id, text="You are not authorized to use this bot.")
     return wrapper
 
+def Admin_Only(func):
+    async def wrapper(update: Update, context, *args, **kwargs):
+        print(update.message.chat.username)
+        ADMINS, _, _ = get_secure_data()
+        if update.message.chat.username in ADMINS.keys():
+            return await func(update, context, *args, **kwargs)
+        else:
+            await context.bot.send_message(chat_id=update.effective_chat.id, text="You are not admin to use this command.")
+    return wrapper
+
+
 def Can_be_cancelled(func):
     async def wrapper(update: Update, context, *args, **kwargs):
         query = update.callback_query
