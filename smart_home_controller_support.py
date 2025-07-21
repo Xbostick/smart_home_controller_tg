@@ -7,6 +7,21 @@ import asyncio
 
 ROOT_DIR = os.path.dirname(os.path.abspath(__file__))
 
+def update_admins_list_file(ADMINS):
+
+    _, API_TOKEN, _ = get_secure_data()
+    with open(os.path.join(ROOT_DIR, "secure_data.txt"), "w",encoding='ASCII') as f:
+        f.write(f"API_KEY_CTR {API_TOKEN}\n")
+        f.write("ADMINS\n")
+        for admin in ADMINS:
+            f.write(f"{admin} {ADMINS[admin].id}")
+        f.close()
+
+def update_verified_list_file(VERIFIED):
+    with open(os.path.join(ROOT_DIR, "session_data.txt"), "w",encoding='ASCII') as f:
+        for user in VERIFIED:
+            f.write(f"{user} {VERIFIED[user].id}")
+        f.close()
 
 
 def get_secure_data() -> list[dict]:
@@ -14,13 +29,14 @@ def get_secure_data() -> list[dict]:
         """This file contains  Telegram API_TOKEN and ADMINS. So init it
         """
         API_TOKEN = f.readline().split(' ')[1]
-        ADMINS = {admin : {} for admin in f.readline().split(' ')[1:] }
+        _ = f.readline() # ADMINS
+        ADMINS = {line.split(' ')[0] : {"id" : line.split(' ')[1]} for line in f.readlines()}
     
     print(ADMINS, API_TOKEN)
 
     if os.path.exists(os.path.join(ROOT_DIR,"session_data.txt")):
         with open (os.path.join(ROOT_DIR,"session_data.txt"), "r") as f:
-            VALDATED_USERS = {line.split(' ')[0] : line.split(' ')[1] for line in f.readlines()}
+            VALDATED_USERS = {line.split(' ')[0] : {"id" : line.split(' ')[1]} for line in f.readlines()}
     else:
         VALDATED_USERS = {}
 

@@ -6,7 +6,7 @@ from telegram.ext import ApplicationBuilder, ContextTypes, CommandHandler, Callb
 from wakeonlan import send_magic_packet
 from yeelight import Bulb
 
-from smart_home_controller_support import get_secure_data, get_local_data, LOCAL_SERVING, Authorized_Only, Admin_Only
+from smart_home_controller_support import get_secure_data, get_local_data, LOCAL_SERVING, Authorized_Only, Admin_Only, update_verified_list_file, update_admins_list_file
 
 str_to_greet_newcomers1 = "Hello! I'm a telegram bot for remote controll your smart home devices for 196. \n"
 str_to_greet_newcomers2 = "To get started, you need to be confirmed by admins. W8 please, they already notificated. \n"
@@ -45,14 +45,14 @@ async def start(update, context):
     elif update.message.chat.username in VALDATED_USERS:
         await context.bot.send_message(chat_id=update.effective_chat.id, text="You are in validated users list. Nice to meet you! Dialog id saved")
         if not VALDATED_USERS[update.message.chat.username]["id"]:
-            VALDATED_USERS[update.message.chat.username]["id"] = update.message.chat.id            
-            with open("session_data.txt", "a+", encoding='ASCII') as f:
-                f.write(f"{update.message.chat.username} {update.message.chat.id}\n")   
+            VALDATED_USERS[update.message.chat.username]["id"] = update.message.chat.id
+            update_verified_list_file(VALDATED_USERS)            
     else:
         await context.bot.send_message(chat_id=update.effective_chat.id, text="You are in admin list. Nice to meet you! Dialog id saved")
         print(f"added Admin name = {update.message.chat.username}, id = {update.message.chat.id} \n")
         ADMINS[update.message.chat.username] = {"id" : update.message.chat.id,
                                                "actions" : None}
+        update_admins_list_file(ADMINS)
         print(f"New admn list = {ADMINS}")
 
 @Admin_Only
@@ -68,14 +68,16 @@ async def verify(update, context):
         return
 
     username = context.args[0]
+    chat_id_user = context.args[1]
     if username[0] == "@":
         username = username[1:]
 
-    VALDATED_USERS[username] = {"id" : None,
+    VALDATED_USERS[username] = {"id" : chat_id_user,
                                 "actions" : None}
     with open("./session_data.txt","a") as f:
-      await f.write(f"\n{username} 0")
+      await f.write(f"\n{username} {chat_id_user}")
       f.close()
+    await context.bot.send_message(chat_id=chat_id_user, text= f"You are verified")
     await context.bot.send_message(chat_id=update.effective_chat.id, text= f"{username} is verified")
 
 @Authorized_Only    
