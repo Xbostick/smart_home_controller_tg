@@ -75,7 +75,7 @@ async def verify(update, context):
     VALDATED_USERS[username] = {"id" : chat_id_user,
                                 "actions" : None}
     with open("./session_data.txt","a") as f:
-      await f.write(f"\n{username} {chat_id_user}")
+      f.write(f"\n{username} {chat_id_user}")
       f.close()
     await context.bot.send_message(chat_id=chat_id_user, text= f"You are verified")
     await context.bot.send_message(chat_id=update.effective_chat.id, text= f"{username} is verified")
