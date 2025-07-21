@@ -31,7 +31,8 @@ def get_secure_data() -> list[dict]:
         """
         API_TOKEN = f.readline().split(' ')[1]
         _ = f.readline() # ADMINS
-        ADMINS = {line.split(' ')[0] : {"id" : line.split(' ')[1]} for line in f.readlines()}
+        lines = f.readlines()
+        ADMINS = {line.split(' ')[0] : {"id" : line.split(' ')[1]} for line in lines}
     
     print(ADMINS, API_TOKEN)
 
