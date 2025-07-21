@@ -14,7 +14,7 @@ def update_admins_list_file(ADMINS):
         f.write(f"API_KEY_CTR {API_TOKEN}\n")
         f.write("ADMINS\n")
         for admin in ADMINS:
-            f.write(f"{admin} {ADMINS[admin][id]}")
+            f.write(f"{admin} {ADMINS[admin][id]}\n")
         f.close()
 
 def update_verified_list_file(VERIFIED):
