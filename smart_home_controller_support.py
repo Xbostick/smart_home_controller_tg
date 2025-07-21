@@ -11,7 +11,7 @@ def update_admins_list_file(ADMINS):
     id = "id"
     _, API_TOKEN, _ = get_secure_data()
     with open(os.path.join(ROOT_DIR, "secure_data.txt"), "w",encoding='ASCII') as f:
-        f.write(f"API_KEY_CTR {API_TOKEN}\n")
+        f.write(f"API_KEY_CTR {API_TOKEN}")
         f.write("ADMINS\n")
         for admin in ADMINS:
             f.write(f"{admin} {ADMINS[admin][id]}\n")
