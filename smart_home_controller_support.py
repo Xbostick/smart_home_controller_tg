@@ -32,13 +32,13 @@ def get_secure_data() -> list[dict]:
         API_TOKEN = f.readline().split(' ')[1]
         _ = f.readline() # ADMINS
         lines = f.readlines()
-        ADMINS = {line.split(' ')[0] : {"id" : line.split(' ')[1]} for line in lines}
+        ADMINS = {line.split(' ')[0] : {"id" : line[:-1].split(' ')[1]} for line in lines}
     
     print(ADMINS, API_TOKEN)
 
     if os.path.exists(os.path.join(ROOT_DIR,"session_data.txt")):
         with open (os.path.join(ROOT_DIR,"session_data.txt"), "r") as f:
-            VALDATED_USERS = {line.split(' ')[0] : {"id" : line.split(' ')[1]} for line in f.readlines()}
+            VALDATED_USERS = {line.split(' ')[0] : {"id" : line[:-1].split(' ')[1]} for line in f.readlines()}
     else:
         VALDATED_USERS = {}
 
