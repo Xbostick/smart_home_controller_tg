@@ -25,9 +25,10 @@ async def verify_notification(update, context):
     for admin in ADMINS.values():
         print(admin)
         print(admin.keys())
-        notification = f"User {update.message.chat.username} want to have controls. Is it fine to you?\n \
-type in \"/verify username {update.message.chat.id}\" to confirm"
-        await context.bot.sendMessage(chat_id=admin["id"], text=notification)
+        if admin["id"]:
+            notification = f"User {update.message.chat.username} want to have controls. Is it fine to you?\n \
+    type in \"/verify {update.message.chat.username} {update.message.chat.id}\" to confirm"
+            await context.bot.sendMessage(chat_id=admin["id"], text=notification)
 
 
 async def start(update, context):
