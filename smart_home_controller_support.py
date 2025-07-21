@@ -14,13 +14,13 @@ def update_admins_list_file(ADMINS):
         f.write(f"API_KEY_CTR {API_TOKEN}\n")
         f.write("ADMINS\n")
         for admin in ADMINS:
-            f.write(f"{admin} {ADMINS[admin].id}")
+            f.write(f"{admin} {ADMINS[admin]["id"]}")
         f.close()
 
 def update_verified_list_file(VERIFIED):
     with open(os.path.join(ROOT_DIR, "session_data.txt"), "w",encoding='ASCII') as f:
         for user in VERIFIED:
-            f.write(f"{user} {VERIFIED[user].id}")
+            f.write(f"{user} {VERIFIED[user]["id"]}")
         f.close()
 
 
