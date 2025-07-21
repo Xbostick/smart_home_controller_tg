@@ -8,19 +8,20 @@ import asyncio
 ROOT_DIR = os.path.dirname(os.path.abspath(__file__))
 
 def update_admins_list_file(ADMINS):
-
+    id = "id"
     _, API_TOKEN, _ = get_secure_data()
     with open(os.path.join(ROOT_DIR, "secure_data.txt"), "w",encoding='ASCII') as f:
         f.write(f"API_KEY_CTR {API_TOKEN}\n")
         f.write("ADMINS\n")
         for admin in ADMINS:
-            f.write(f"{admin} {ADMINS[admin]["id"]}")
+            f.write(f"{admin} {ADMINS[admin][id]}")
         f.close()
 
 def update_verified_list_file(VERIFIED):
+    id = "id"
     with open(os.path.join(ROOT_DIR, "session_data.txt"), "w",encoding='ASCII') as f:
         for user in VERIFIED:
-            f.write(f"{user} {VERIFIED[user]["id"]}")
+            f.write(f"{user} {VERIFIED[user][id]}")
         f.close()
 
 
