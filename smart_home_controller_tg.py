@@ -81,11 +81,6 @@ async def verify(update, context):
     await context.bot.send_message(chat_id=chat_id_user, text= f"You are verified")
     await context.bot.send_message(chat_id=update.effective_chat.id, text= f"{username} is verified")
 
-@Authorized_Only    
-async def WakeUpNeo(update, context):
-    await context.bot.send_message(chat_id=update.effective_chat.id, text= f"WakeUp Package sent")
-    send_magic_packet("7C,10,C9,43,17,E3")
-
 def build_menu(buttons, n_cols,
                header_buttons=None,
                footer_buttons=None):
@@ -103,21 +98,19 @@ async def end(update, context):
 
 
 if __name__ == '__main__':
-    subprocess.Popen(['python3', str(os.path.join(ROOT_DIR,"auto_light_up.py"))])
     print(f"TOKKEN = {API_TOKEN}\n\
           ADMINS = {ADMINS}\n \
           VALDATED_USERS = {VALDATED_USERS}")
+          
     application = ApplicationBuilder().token(API_TOKEN[:-1]).build()
 
     
     start_handler = CommandHandler('start', start)
     verify_handler = CommandHandler('verify', verify)
-    WakeUpNeo_handler = CommandHandler('wakeup', WakeUpNeo)
     # Debug_handler = CommandHandler('debug', menu_debug)
 
     application.add_handler(start_handler)
     application.add_handler(verify_handler)
-    application.add_handler(WakeUpNeo_handler)
     # application.add_handler(Debug_handler)
 
     local_handlers = []
