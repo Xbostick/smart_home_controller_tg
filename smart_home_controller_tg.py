@@ -92,10 +92,10 @@ async def end(update, context):
 
 
 if __name__ == '__main__':
-    subprocess.Popen(['python3', str(os.path.join(ROOT_DIR,"auto_light_up.py"))])
     print(f"TOKKEN = {API_TOKEN}\n\
           ADMINS = {ADMINS}\n \
           VALDATED_USERS = {VALDATED_USERS}")
+          
     application = ApplicationBuilder().token(API_TOKEN[:-1]).build()
 
     

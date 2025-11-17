@@ -178,10 +178,6 @@ async def server_handler(update, context):
     await query.edit_message_text(text=f"Выбранный вариант: {variant}, ничего не будет :( ")
     return ConversationHandler.END
 
-
-#_____________________end_____________________#
-
-
 #_______________PC sections _______________#
 from wakeonlan import send_magic_packet
 async def WakeUpNeo(pc_mac_adr):
@@ -219,10 +215,10 @@ async def pc_handler(update, context):
 
 
 LOCAL_SERVING = {
-    # "bulbs" : {
-    #     "processing" : bulb_buttons,
-    #     "callback" : bulb_handler,
-    # },
+    "bulbs" : {
+        "processing" : bulb_buttons,
+        "callback" : bulb_handler,
+    },
     # "servers" : 
     #     {
     #     "processing" : server_buttons,
