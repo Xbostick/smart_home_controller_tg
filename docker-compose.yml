@@ -1,0 +1,16 @@
+# Host network: same LAN as the Pi/host (Yeelight, Wake-on-LAN UDP).
+# ./data on the host is mounted at /data: secure_data.txt, session_data.txt, local_data.txt.
+
+services:
+  smart-home-bot:
+    build: .
+    network_mode: host
+    restart: unless-stopped
+    environment:
+      TELEGRAM_BOT_TOKEN: ${TELEGRAM_BOT_TOKEN}
+      BOT_ADMINS_JSON: ${BOT_ADMINS_JSON}
+      # Optional: SOCKS/HTTP proxy for Telegram API (same names as in code)
+      TELEGRAM_PROXY: socks5://192.168.0.200:11080
+      DATA_DIR: /data
+    volumes:
+      - ./data:/data

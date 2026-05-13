@@ -1,0 +1,11 @@
+services:
+  socks5-nl:
+    build: .
+    image: amnezia-socks5-nl:local
+    container_name: socks5-nl
+    restart: unless-stopped
+    network_mode: host
+    cap_add:
+      - NET_ADMIN
+    # Dante needs root for bind + ip rule on the host netns.
+    user: "0:0"

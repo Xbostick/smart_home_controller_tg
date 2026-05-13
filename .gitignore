@@ -215,11 +215,10 @@ __marimo__/
 # Streamlit
 .streamlit/secrets.toml
 
-debug_jpt.ipynb
-example.py
-jabka_bot.py
-secure_data.txt
-session_data.txt
-local_data.txt
-ex.py
+data/*
+socks5-nl/danted.conf
+socks5-nl/entrypoint.sh
+socks5-nl/SOCKS5-NL-SETUP.md
+
+
 __pycache__/
