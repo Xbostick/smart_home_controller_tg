@@ -10,7 +10,7 @@ services:
       TELEGRAM_BOT_TOKEN: ${TELEGRAM_BOT_TOKEN}
       BOT_ADMINS_JSON: ${BOT_ADMINS_JSON}
       # Optional: SOCKS/HTTP proxy for Telegram API (same names as in code)
-      TELEGRAM_PROXY: socks5://192.168.0.200:11080
+      TELEGRAM_PROXY: ${TELEGRAM_PROXY}
       DATA_DIR: /data
     volumes:
       - ./data:/data

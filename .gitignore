@@ -207,6 +207,9 @@ cython_debug/
 # PyPI configuration file
 .pypirc
 
+#AI agents
+.cursor/*
+
 # Marimo
 marimo/_static/
 marimo/_lsp/
